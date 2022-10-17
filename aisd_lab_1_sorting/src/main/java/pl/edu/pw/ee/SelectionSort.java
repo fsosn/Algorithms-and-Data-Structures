@@ -6,11 +6,14 @@ public class SelectionSort implements Sorting {
 
     @Override
     public void sort(double[] nums) {
-
         if (nums == null) {
-            throw new IllegalArgumentException("Nums cannot be null!");
+            throw new IllegalArgumentException("Nums array cannot be null!");
         }
 
+        selectionSort(nums);
+    }
+
+    private void selectionSort(double[] nums) {
         int n = nums.length;
         int minValId;
 
@@ -24,7 +27,6 @@ public class SelectionSort implements Sorting {
             }
             swap(nums, i, minValId);
         }
-
     }
 
     private void swap(double[] nums, int firstId, int secondId) {
