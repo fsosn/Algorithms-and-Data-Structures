@@ -25,4 +25,5 @@ public class InsertionSort implements Sorting {
             nums[j + 1] = currentValue;
         }
     }
+
 }

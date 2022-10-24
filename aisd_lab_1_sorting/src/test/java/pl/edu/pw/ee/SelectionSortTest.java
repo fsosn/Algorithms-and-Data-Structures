@@ -109,7 +109,7 @@ public class SelectionSortTest {
     }
 
     @Test
-    public void shouldSortCorrectlyWhenZeroInput() {
+    public void shouldSortCorrectlyWhenConstantInput() {
         //given
         double[] nums = {0, 0, 0, 0, 0};
 
@@ -125,7 +125,7 @@ public class SelectionSortTest {
     public void shouldSortCorrectlyWhenInputRandomlyGenerated() {
         //given
         random = new Random(100);
-        double[] nums = random.doubles(100000).toArray();
+        double[] nums = random.doubles(100_000).toArray();
 
         //when
         selectionSort.sort(nums);
@@ -140,4 +140,5 @@ public class SelectionSortTest {
         }
         assertTrue(sorted);
     }
+
 }

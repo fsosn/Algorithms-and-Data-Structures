@@ -109,7 +109,7 @@ public class InsertionSortTest {
     }
 
     @Test
-    public void shouldSortCorrectlyWhenZeroInput() {
+    public void shouldSortCorrectlyWhenConstantZeroInput() {
         //given
         double[] nums = {0, 0, 0, 0, 0};
 
@@ -125,7 +125,7 @@ public class InsertionSortTest {
     public void shouldSortCorrectlyWhenInputRandomlyGenerated() {
         //given
         random = new Random(100);
-        double[] nums = random.doubles(100000).toArray();
+        double[] nums = random.doubles(100_000).toArray();
 
         //when
         insertionSort.sort(nums);
@@ -140,4 +140,5 @@ public class InsertionSortTest {
         }
         assertTrue(sorted);
     }
+
 }

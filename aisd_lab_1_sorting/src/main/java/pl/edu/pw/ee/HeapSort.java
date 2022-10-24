@@ -20,10 +20,15 @@ public class HeapSort implements Sorting {
 
         data = boxingData(nums);
         heap = new Heap(data);
+        heap.build();
 
         for (int i = n - 1; i > 0; i--) {
             swap(0, i);
             heap.heapify(0, i);
+        }
+
+        for (int i = 0; i < n; i++) {
+            nums[i] = data.get(i);
         }
     }
 

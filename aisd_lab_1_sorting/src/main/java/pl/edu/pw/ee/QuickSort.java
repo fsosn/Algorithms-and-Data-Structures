@@ -85,4 +85,5 @@ public class QuickSort implements Sorting {
             data[secondId] = firstValue;
         }
     }
+
 }

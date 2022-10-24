@@ -36,4 +36,5 @@ public class SelectionSort implements Sorting {
             nums[secondId] = firstVal;
         }
     }
+
 }
