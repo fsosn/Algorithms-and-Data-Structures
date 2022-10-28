@@ -4,33 +4,41 @@ import pl.edu.pw.ee.services.HashTable;
 
 public class HashListChaining<T extends Comparable<T>> implements HashTable<T> {
 
-    private final Elem nil = null;
-    private Elem[] hashElems;
+    private final Elem<T> nil = null;
+    private Elem<T>[] hashElems;
     private int nElem;
 
-    private class Elem {
+    private class Elem<T> {
 
-        private Object value;
-        private Elem next;
+        private T value;
+        private Elem<T> next;
 
-        Elem(T value, Elem nextElem) {
+        Elem(T value, Elem<T> nextElem) {
             this.value = value;
             this.next = nextElem;
         }
     }
 
     public HashListChaining(int size) {
+        if (size < 1) {
+            throw new IllegalArgumentException("Hash table size cannot be lower than 1!");
+        }
+
         hashElems = new Elem[size];
         initializeHash();
     }
 
     @Override
     public void add(T value) {
+        if (value == null) {
+            throw new IllegalArgumentException("Cannot add null value!");
+        }
+
         int hashCode = value.hashCode();
         int hashId = countHashId(hashCode);
 
-        Elem oldElem = hashElems[hashId];
-        while (oldElem != nil && !oldElem.equals(value)) {
+        Elem<T> oldElem = hashElems[hashId];
+        while (oldElem != nil && !oldElem.value.equals(value)) {
             oldElem = oldElem.next;
         }
         if (oldElem != nil) {
@@ -43,31 +51,54 @@ public class HashListChaining<T extends Comparable<T>> implements HashTable<T> {
 
     @Override
     public T get(T value) {
+        if (value == null) {
+            throw new IllegalArgumentException("Cannot get null value!");
+        }
+
         int hashCode = value.hashCode();
         int hashId = countHashId(hashCode);
 
-        Elem elem = hashElems[hashId];
+        Elem<T> elem = hashElems[hashId];
 
         while (elem != nil && !elem.value.equals(value)) {
             elem = elem.next;
         }
 
-        return elem != nil ? elem.value : nil;
+        return elem != nil ? elem.value : null;
     }
 
     @Override
     public void delete(T value) {
+        if (value == null) {
+            throw new IllegalArgumentException("Cannot delete null value!");
+        }
+
         int hashCode = value.hashCode();
         int hashId = countHashId(hashCode);
 
-        Elem elem = hashElems[hashId];
+        Elem<T> elem = hashElems[hashId];
 
-        while (elem != nil && !elem.value.equals(value)) {
-            elem = elem.next;
+        if (elem == nil) {
+            return;
         }
 
-        
-    
+        if (elem.value.equals(value)) {
+            hashElems[hashId] = elem.next;
+            this.nElem--;
+        } else {
+            Elem<T> previous = elem;
+            Elem<T> current = elem.next;
+
+            while (current != nil && !current.value.equals(value)) {
+                previous = current;
+                current = current.next;
+            }
+
+            if (current != nil) {
+                previous.next = current.next;
+                this.nElem--;
+            }
+        }
     }
 
     public double countLoadFactor() {
@@ -85,7 +116,11 @@ public class HashListChaining<T extends Comparable<T>> implements HashTable<T> {
 
     private int countHashId(int hashCode) {
         int n = hashElems.length;
-        return Math.abs(hashCode) % n;
+        return Math.abs(hashCode & 0x7FFFFFFF) % n;
+    }
+
+    public int getNumberOfElements() {
+        return this.nElem;
     }
 
 }
