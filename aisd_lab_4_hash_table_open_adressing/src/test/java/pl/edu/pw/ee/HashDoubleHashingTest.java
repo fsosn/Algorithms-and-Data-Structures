@@ -1,11 +1,11 @@
 package pl.edu.pw.ee;
 
-import static org.junit.Assert.assertEquals;
 import java.lang.reflect.Field;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import pl.edu.pw.ee.services.HashTable;
 
-public class HashLinearProbingTest {
+public class HashDoubleHashingTest {
 
     private int getNumOfElems(HashTable<?> hash) {
         String fieldNumOfElems = "nElems";
@@ -28,7 +28,19 @@ public class HashLinearProbingTest {
         int initialSize = 0;
 
         // when
-        HashTable<Double> unusedHash = new HashLinearProbing<>(initialSize);
+        HashTable<Double> unusedHash = new HashDoubleHashing<>(initialSize);
+
+        // then
+        assert false;
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowExceptionWhenInitialSizeEqualsThree() {
+        // given
+        int initialSize = 3;
+
+        // when
+        HashTable<Double> unusedHash = new HashDoubleHashing<>(initialSize);
 
         // then
         assert false;
@@ -37,7 +49,7 @@ public class HashLinearProbingTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionWhenPutMethodArgumentIsNull() {
         // given
-        HashTable<Double> hash = new HashLinearProbing<>(1);
+        HashTable<Double> hash = new HashDoubleHashing<>(1);
 
         // when
         hash.put(null);
@@ -49,7 +61,7 @@ public class HashLinearProbingTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionWhenGetMethodArgumentIsNull() {
         // given
-        HashTable<Double> hash = new HashLinearProbing<>(1);
+        HashTable<Double> hash = new HashDoubleHashing<>(1);
 
         // when
         hash.get(null);
@@ -61,7 +73,7 @@ public class HashLinearProbingTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionWhenDeleteMethodArgumentIsNull() {
         // given
-        HashTable<Double> hash = new HashLinearProbing<>(1);
+        HashTable<Double> hash = new HashDoubleHashing<>(1);
 
         // when
         hash.delete(null);
@@ -73,7 +85,7 @@ public class HashLinearProbingTest {
     @Test
     public void shouldCorrectlyAddNewElemsWhenNotExistInHashTable() {
         // given
-        HashTable<String> emptyHash = new HashLinearProbing<>(5);
+        HashTable<String> emptyHash = new HashDoubleHashing<>();
         String newElem = "nothing special";
 
         // when
@@ -89,7 +101,7 @@ public class HashLinearProbingTest {
     @Test
     public void shouldCorrectlyAddMultipleNewElemsWhenNotExistInHashTable() {
         // given
-        HashTable<Integer> hash = new HashLinearProbing<>();
+        HashTable<Integer> hash = new HashDoubleHashing<>();
         Integer newElem;
         int numOfElemsToBePut = 1000;
 
@@ -111,7 +123,7 @@ public class HashLinearProbingTest {
     @Test
     public void shouldCorrectlyReturnNumOfElemsAfterPuttingIdenticalElems() {
         // given
-        HashTable<String> hash = new HashLinearProbing<>();
+        HashTable<String> hash = new HashDoubleHashing<>();
         String firstElem = "nothing special";
         String secondElem = "nothing special";
         String thirdElem = "nothing special";
@@ -131,7 +143,7 @@ public class HashLinearProbingTest {
     @Test
     public void shouldCorrectlyReturnNumOfElemsAfterDeletingSameValueMultipleTimes() {
         // given
-        HashTable<String> hash = new HashLinearProbing<>();
+        HashTable<String> hash = new HashDoubleHashing<>();
         String elem = "nothing special";
 
         // when
@@ -152,7 +164,7 @@ public class HashLinearProbingTest {
     @Test
     public void getShouldCorrectlyReturnElemFromHash() {
         // given
-        HashTable<String> hash = new HashLinearProbing<>();
+        HashTable<String> hash = new HashDoubleHashing<>();
         String input = "abcd";
         String output;
 
@@ -171,7 +183,7 @@ public class HashLinearProbingTest {
     @Test
     public void getShouldReturnNullWhenElemIsNotInHash() {
         // given
-        HashTable<String> hash = new HashLinearProbing<>();
+        HashTable<String> hash = new HashDoubleHashing<>();
         String output;
 
         // when
@@ -184,7 +196,7 @@ public class HashLinearProbingTest {
     @Test
     public void shouldNotThrowExceptionWhenDeleteElemWhichIsNotInHash() {
         // given
-        HashTable<String> hash = new HashLinearProbing<>();
+        HashTable<String> hash = new HashDoubleHashing<>();
 
         // when
         hash.delete("abcd");
@@ -196,7 +208,7 @@ public class HashLinearProbingTest {
     @Test
     public void shouldCorrectlyReturnNumberOfElemsWhenDeleteFromHash() {
         // given
-        HashTable<String> hash = new HashLinearProbing<>();
+        HashTable<String> hash = new HashDoubleHashing<>();
         String input = "to_be_deleted";
 
         // when
@@ -216,7 +228,7 @@ public class HashLinearProbingTest {
     @Test
     public void shouldCorrectlyReturnNumberOfElemsWhenDeleteMultipleElemsFromHash() {
         // given
-        HashTable<Integer> hash = new HashLinearProbing<>();
+        HashTable<Integer> hash = new HashDoubleHashing<>();
         int numOfElemsToBePut = 9_876;
         int numOfElemsToBeDeleted = 5_432;
 
@@ -245,7 +257,7 @@ public class HashLinearProbingTest {
     @Test
     public void getShouldCorrectlyReturnEachOfTheElemsWithIdenticalHashCode() {
         // given
-        HashTable<String> hash = new HashLinearProbing<>();
+        HashTable<String> hash = new HashDoubleHashing<>();
         String firstInput = "AaAaAa";
         String secondInput = "AaAaBB";
         String thirdInput = "AaBBAa";
@@ -275,7 +287,7 @@ public class HashLinearProbingTest {
     @Test
     public void shouldCorrectlyDeleteFirstElemAndThenGetOtherElems() {
         // given
-        HashTable<String> hash = new HashLinearProbing<>();
+        HashTable<String> hash = new HashDoubleHashing<>();
         String firstInput = "AaAaAa";
         String secondInput = "AaAaBB";
         String thirdInput = "AaBBAa";
@@ -306,7 +318,7 @@ public class HashLinearProbingTest {
     @Test
     public void shouldCorrectlyDeleteSecondElemAndThenGetOtherElems() {
         // given
-        HashTable<String> hash = new HashLinearProbing<>();
+        HashTable<String> hash = new HashDoubleHashing<>();
         String firstInput = "AaAaAa";
         String secondInput = "AaAaBB";
         String thirdInput = "AaBBAa";
@@ -337,7 +349,7 @@ public class HashLinearProbingTest {
     @Test
     public void shouldCorrectlyDeleteThirdElemAndThenGetOtherElems() {
         // given
-        HashTable<String> hash = new HashLinearProbing<>(10);
+        HashTable<String> hash = new HashDoubleHashing<>();
         String firstInput = "AaAaAa";
         String secondInput = "AaAaBB";
         String thirdInput = "AaBBAa";

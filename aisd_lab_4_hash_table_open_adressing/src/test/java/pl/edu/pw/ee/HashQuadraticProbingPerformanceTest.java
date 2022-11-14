@@ -3,24 +3,25 @@ package pl.edu.pw.ee;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import static java.lang.String.format;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.Test;
 import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
-import org.junit.Test;
 import pl.edu.pw.ee.services.HashTable;
 
-import static java.lang.String.format;
-
-public class PerformanceTest {
+public class HashQuadraticProbingPerformanceTest {
 
     private static final String WORDS_FILEPATH = "src/main/resources/wordlist_100_000.txt";
-    private static final Logger LOG = Logger.getLogger(PerformanceTest.class.getName());
+    private static final Logger LOG = Logger.getLogger(HashQuadraticProbingPerformanceTest.class.getName());
+    private final double a = 0.5;
+    private final double b = 0.5;
 
     @Test
     public void measurePerfomanceOfHashes() {
         int nOfRepeats = 30;
-        int[] initialSizes = {4095, 8191, 16_383, 65_927, 131_357, 263_293, 524_413};
+        int[] initialSizes = {512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144};
         String[] words = prepareWords();
 
         HashTable<String> hash;
@@ -28,15 +29,15 @@ public class PerformanceTest {
         long startTime, measuredTime;
 
         for (int size : initialSizes) {
-            hash = new HashLinearProbing<>(size);
             times = new ArrayList<>();
 
             for (int i = 0; i < nOfRepeats; i++) {
+                hash = new HashQuadraticProbing<>(size, this.a, this.b);
+
                 startTime = System.nanoTime();
-
                 putWordsIntoHash(hash, words);
-
                 measuredTime = System.nanoTime() - startTime;
+
                 times.add(measuredTime);
             }
 
@@ -57,10 +58,9 @@ public class PerformanceTest {
         List<String> words = new ArrayList<>();
         String line;
         int counter = 0;
-        int maxNumWords = 10_000;
+        int maxNumWords = 100_000;
 
-        try (FileReader fReader = new FileReader(WORDS_FILEPATH);
-                BufferedReader buffReader = new BufferedReader(fReader)) {
+        try ( FileReader fReader = new FileReader(WORDS_FILEPATH);  BufferedReader buffReader = new BufferedReader(fReader)) {
 
             while ((line = buffReader.readLine()) != null && counter < maxNumWords) {
                 words.add(line);
@@ -81,7 +81,7 @@ public class PerformanceTest {
 
         long sum = 0;
         long avgTime;
-        
+
         timesAsList.sort(null);
 
         for (int i = startId; i < endId && i < n; i++) {

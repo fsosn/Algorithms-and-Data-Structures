@@ -1,11 +1,11 @@
 package pl.edu.pw.ee;
 
-import static org.junit.Assert.assertEquals;
 import java.lang.reflect.Field;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import pl.edu.pw.ee.services.HashTable;
 
-public class HashLinearProbingTest {
+public class HashQuadraticProbingTest {
 
     private int getNumOfElems(HashTable<?> hash) {
         String fieldNumOfElems = "nElems";
@@ -28,7 +28,31 @@ public class HashLinearProbingTest {
         int initialSize = 0;
 
         // when
-        HashTable<Double> unusedHash = new HashLinearProbing<>(initialSize);
+        HashTable<Double> unusedHash = new HashQuadraticProbing<>(initialSize, 0.5, 0.5);
+
+        // then
+        assert false;
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowExceptionWhenArgumentAIsEqualZero() {
+        // given
+        int initialSize = 0;
+
+        // when
+        HashTable<Double> unusedHash = new HashQuadraticProbing<>(initialSize, 0, 0.5);
+
+        // then
+        assert false;
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowExceptionWhenArgumentBIsEqualZero() {
+        // given
+        int initialSize = 0;
+
+        // when
+        HashTable<Double> unusedHash = new HashQuadraticProbing<>(initialSize, 0.5, 0);
 
         // then
         assert false;
@@ -37,7 +61,7 @@ public class HashLinearProbingTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionWhenPutMethodArgumentIsNull() {
         // given
-        HashTable<Double> hash = new HashLinearProbing<>(1);
+        HashTable<Double> hash = new HashQuadraticProbing<>(1, 0.5, 0.5);
 
         // when
         hash.put(null);
@@ -49,7 +73,7 @@ public class HashLinearProbingTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionWhenGetMethodArgumentIsNull() {
         // given
-        HashTable<Double> hash = new HashLinearProbing<>(1);
+        HashTable<Double> hash = new HashQuadraticProbing<>(1, 0.5, 0.5);
 
         // when
         hash.get(null);
@@ -61,7 +85,7 @@ public class HashLinearProbingTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionWhenDeleteMethodArgumentIsNull() {
         // given
-        HashTable<Double> hash = new HashLinearProbing<>(1);
+        HashTable<Double> hash = new HashQuadraticProbing<>(1, 0.5, 0.5);
 
         // when
         hash.delete(null);
@@ -73,7 +97,7 @@ public class HashLinearProbingTest {
     @Test
     public void shouldCorrectlyAddNewElemsWhenNotExistInHashTable() {
         // given
-        HashTable<String> emptyHash = new HashLinearProbing<>(5);
+        HashTable<String> emptyHash = new HashQuadraticProbing<>();
         String newElem = "nothing special";
 
         // when
@@ -89,7 +113,7 @@ public class HashLinearProbingTest {
     @Test
     public void shouldCorrectlyAddMultipleNewElemsWhenNotExistInHashTable() {
         // given
-        HashTable<Integer> hash = new HashLinearProbing<>();
+        HashTable<Integer> hash = new HashQuadraticProbing<>();
         Integer newElem;
         int numOfElemsToBePut = 1000;
 
@@ -111,7 +135,7 @@ public class HashLinearProbingTest {
     @Test
     public void shouldCorrectlyReturnNumOfElemsAfterPuttingIdenticalElems() {
         // given
-        HashTable<String> hash = new HashLinearProbing<>();
+        HashTable<String> hash = new HashQuadraticProbing<>();
         String firstElem = "nothing special";
         String secondElem = "nothing special";
         String thirdElem = "nothing special";
@@ -131,7 +155,7 @@ public class HashLinearProbingTest {
     @Test
     public void shouldCorrectlyReturnNumOfElemsAfterDeletingSameValueMultipleTimes() {
         // given
-        HashTable<String> hash = new HashLinearProbing<>();
+        HashTable<String> hash = new HashQuadraticProbing<>();
         String elem = "nothing special";
 
         // when
@@ -152,7 +176,7 @@ public class HashLinearProbingTest {
     @Test
     public void getShouldCorrectlyReturnElemFromHash() {
         // given
-        HashTable<String> hash = new HashLinearProbing<>();
+        HashTable<String> hash = new HashQuadraticProbing<>();
         String input = "abcd";
         String output;
 
@@ -171,7 +195,7 @@ public class HashLinearProbingTest {
     @Test
     public void getShouldReturnNullWhenElemIsNotInHash() {
         // given
-        HashTable<String> hash = new HashLinearProbing<>();
+        HashTable<String> hash = new HashQuadraticProbing<>();
         String output;
 
         // when
@@ -184,7 +208,7 @@ public class HashLinearProbingTest {
     @Test
     public void shouldNotThrowExceptionWhenDeleteElemWhichIsNotInHash() {
         // given
-        HashTable<String> hash = new HashLinearProbing<>();
+        HashTable<String> hash = new HashQuadraticProbing<>();
 
         // when
         hash.delete("abcd");
@@ -196,7 +220,7 @@ public class HashLinearProbingTest {
     @Test
     public void shouldCorrectlyReturnNumberOfElemsWhenDeleteFromHash() {
         // given
-        HashTable<String> hash = new HashLinearProbing<>();
+        HashTable<String> hash = new HashQuadraticProbing<>();
         String input = "to_be_deleted";
 
         // when
@@ -216,7 +240,7 @@ public class HashLinearProbingTest {
     @Test
     public void shouldCorrectlyReturnNumberOfElemsWhenDeleteMultipleElemsFromHash() {
         // given
-        HashTable<Integer> hash = new HashLinearProbing<>();
+        HashTable<Integer> hash = new HashQuadraticProbing<>();
         int numOfElemsToBePut = 9_876;
         int numOfElemsToBeDeleted = 5_432;
 
@@ -245,7 +269,7 @@ public class HashLinearProbingTest {
     @Test
     public void getShouldCorrectlyReturnEachOfTheElemsWithIdenticalHashCode() {
         // given
-        HashTable<String> hash = new HashLinearProbing<>();
+        HashTable<String> hash = new HashQuadraticProbing<>();
         String firstInput = "AaAaAa";
         String secondInput = "AaAaBB";
         String thirdInput = "AaBBAa";
@@ -275,7 +299,7 @@ public class HashLinearProbingTest {
     @Test
     public void shouldCorrectlyDeleteFirstElemAndThenGetOtherElems() {
         // given
-        HashTable<String> hash = new HashLinearProbing<>();
+        HashTable<String> hash = new HashQuadraticProbing<>();
         String firstInput = "AaAaAa";
         String secondInput = "AaAaBB";
         String thirdInput = "AaBBAa";
@@ -306,7 +330,7 @@ public class HashLinearProbingTest {
     @Test
     public void shouldCorrectlyDeleteSecondElemAndThenGetOtherElems() {
         // given
-        HashTable<String> hash = new HashLinearProbing<>();
+        HashTable<String> hash = new HashQuadraticProbing<>();
         String firstInput = "AaAaAa";
         String secondInput = "AaAaBB";
         String thirdInput = "AaBBAa";
@@ -337,7 +361,7 @@ public class HashLinearProbingTest {
     @Test
     public void shouldCorrectlyDeleteThirdElemAndThenGetOtherElems() {
         // given
-        HashTable<String> hash = new HashLinearProbing<>(10);
+        HashTable<String> hash = new HashQuadraticProbing<>();
         String firstInput = "AaAaAa";
         String secondInput = "AaAaBB";
         String thirdInput = "AaBBAa";
@@ -363,6 +387,36 @@ public class HashLinearProbingTest {
         assertEquals(firstInput, firstOutput);
         assertEquals(secondInput, secondOutput);
         assertEquals(null, thirdOutput);
+    }
+
+    @Test
+    public void shouldNotGoIntoInfiniteLoop() {
+        // given
+        HashTable<Integer> hash = new HashQuadraticProbing<>(9, 2, 2);
+
+        hash.put(0);
+        hash.put(1);
+        hash.put(2);
+        hash.put(3);
+        hash.put(4);
+        hash.put(5);
+        hash.put(7);
+
+        hash.delete(0);
+        hash.delete(1);
+        hash.delete(2);
+        hash.delete(3);
+        hash.delete(4);
+        hash.delete(5);
+        hash.delete(7);
+
+        //when
+        hash.delete(7);
+        Integer output = hash.get(7);
+
+        // then
+        assert true;
+        assertEquals(null, output);
     }
 
 }

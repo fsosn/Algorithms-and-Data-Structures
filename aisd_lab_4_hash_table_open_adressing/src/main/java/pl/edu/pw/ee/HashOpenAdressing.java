@@ -10,6 +10,14 @@ public abstract class HashOpenAdressing<T extends Comparable<T>> implements Hash
     private T[] hashElems;
     private final double correctLoadFactor;
 
+    private class Deleted implements Comparable<T> {
+
+        @Override
+        public int compareTo(T o) {
+            return -1;
+        }
+    }
+
     HashOpenAdressing() {
         this(2039);
     }
@@ -31,29 +39,68 @@ public abstract class HashOpenAdressing<T extends Comparable<T>> implements Hash
         int i = 0;
         int hashId = hashFunc(key, i);
 
-        while (hashElems[hashId] != nil) {
+        while (hashElems[hashId] != nil && !newElem.equals(hashElems[hashId]) && !(hashElems[hashId] instanceof HashOpenAdressing.Deleted)) {
             if (i + 1 == size) {
                 doubleResize();
                 i = -1;
             }
+
             i = (i + 1) % size;
             hashId = hashFunc(key, i);
         }
 
+        if (!newElem.equals(hashElems[hashId])) {
+            nElems++;
+        }
+
         hashElems[hashId] = newElem;
-        nElems++;
     }
 
     @Override
     public T get(T elem) {
-        // TODO Auto-generated method stub
-        return null;
+        validateInputElem(elem);
+
+        int key = elem.hashCode();
+        int i = 0;
+        int hashId = hashFunc(key, i);
+        int numOfTimesInLoop = 0;
+
+        while ((hashElems[hashId] != nil && !elem.equals(hashElems[hashId])) || hashElems[hashId] instanceof HashOpenAdressing.Deleted) {
+            i = (i + 1) % size;
+            hashId = hashFunc(key, i);
+
+            numOfTimesInLoop++;
+            if (numOfTimesInLoop > this.nElems) {
+                return null;
+            }
+        }
+
+        return hashElems[hashId] != nil ? hashElems[hashId] : null;
     }
 
     @Override
     public void delete(T elem) {
-        // TODO Auto-generated method stub
+        validateInputElem(elem);
 
+        int key = elem.hashCode();
+        int i = 0;
+        int hashId = hashFunc(key, i);
+        int numOfTimesInLoop = 0;
+
+        while ((hashElems[hashId] != nil && !elem.equals(hashElems[hashId])) || hashElems[hashId] instanceof HashOpenAdressing.Deleted) {
+            i = (i + 1) % size;
+            hashId = hashFunc(key, i);
+
+            numOfTimesInLoop++;
+            if (numOfTimesInLoop > this.nElems) {
+                return;
+            }
+        }
+
+        if (hashElems[hashId] != nil && elem.equals(hashElems[hashId])) {
+            hashElems[hashId] = (T) new Deleted();
+            nElems--;
+        }
     }
 
     private void validateHashInitSize(int initialSize) {
@@ -87,14 +134,15 @@ public abstract class HashOpenAdressing<T extends Comparable<T>> implements Hash
     }
 
     private void doubleResize() {
+        T[] oldElems = (T[]) new Comparable[this.size];
+        System.arraycopy(this.hashElems, 0, oldElems, 0, this.size);
+
         this.size *= 2;
         this.nElems = 0;
-
-        T[] oldElems = hashElems;
-        hashElems = (T[]) new Comparable[this.size];
+        this.hashElems = (T[]) new Comparable[this.size];
 
         for (T elem : oldElems) {
-            if (elem != nil) {
+            if (elem != nil && !(elem instanceof HashOpenAdressing.Deleted)) {
                 put(elem);
             }
         }
