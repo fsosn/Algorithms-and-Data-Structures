@@ -38,6 +38,9 @@ public class Huffman {
     private int decompress(String pathToRootDir) {
         int numOfCharsInOutFile = 0;
 
+        FileRead fileRead = new FileRead();
+        String headerInformation = fileRead.readHeaderInfo();
+
         return numOfCharsInOutFile;
     }
 

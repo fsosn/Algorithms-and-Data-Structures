@@ -1,7 +1,11 @@
 package pl.edu.pw.ee;
 
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -11,6 +15,7 @@ import java.util.logging.Logger;
 public class FileRead {
 
     private static final Logger LOG = Logger.getLogger(FileRead.class.getName());
+    private final String HEADER_INFORMATION_FILEPATH = "src/main/resources/header_information.bin";
 
     public Map<Character, Integer> charFrequenciesMap(String pathToRootDir) {
         Map<Character, Integer> charFrequencies = new HashMap<>();
@@ -32,6 +37,55 @@ public class FileRead {
         }
 
         return charFrequencies;
+    }
+
+    public String readHeaderInfo() {
+        DataInputStream dataInputStream;
+        StringBuilder decodedHeaderBinary = new StringBuilder("");
+
+        try {
+            dataInputStream = new DataInputStream(new BufferedInputStream(new FileInputStream(new File(HEADER_INFORMATION_FILEPATH))));
+            byte[] bytes = new byte[dataInputStream.available()];
+            dataInputStream.read(bytes);
+            BitSet bitSet = BitSet.valueOf(bytes);
+
+            for (int i = 0; i <= bitSet.length(); i++) {
+                if (bitSet.get(i)) {
+                    decodedHeaderBinary.append('1');
+                } else {
+                    decodedHeaderBinary.append('0');
+                }
+            }
+
+            int trailingZeroes = decodedHeaderBinary.length() % 8;
+            for (int i = 0; i < trailingZeroes; i++) {
+                decodedHeaderBinary.append('0');
+            }
+
+        } catch (IOException e) {
+            LOG.log(SEVERE, "[Error] An error occurred during reading header information.", e);
+        }
+
+        char[] bits = decodedHeaderBinary.toString().toCharArray();
+        StringBuilder header = new StringBuilder("");
+        for (int i = 0; i < bits.length; i++) {
+            if (bits[i] == '1') {
+                header.append('1');
+
+                if (i < bits.length - 8) {
+                    String characterBinary = "";
+                    for (int j = i + 1; j <= i + 8; j++) {
+                        characterBinary += bits[j];
+                    }
+                    header.append((char) Integer.parseInt(characterBinary, 2));
+                    i += characterBinary.length();
+                }
+            } else {
+                header.append('0');
+            }
+        }
+
+        return header.toString();
     }
 
     public int numOfChars(String pathToRootDir) {

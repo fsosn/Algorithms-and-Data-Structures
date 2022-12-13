@@ -1,8 +1,6 @@
 package pl.edu.pw.ee;
 
-import java.io.BufferedWriter;
 import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,7 +14,8 @@ import java.util.logging.Logger;
 public class FileWrite {
 
     private static final Logger LOG = Logger.getLogger(FileWrite.class.getName());
-    private final String COMPRESSED_TEXT_FILEPATH = "src/main/resources/compressed.txt";
+    private final String COMPRESSED_TEXT_FILEPATH = "src/main/resources/compressed.bin";
+    private final String HEADER_INFORMATION_FILEPATH = "src/main/resources/header_information.bin";
 
     public int encodeText(Map<Character, String> charCodes, String pathToRootDir) {
         BitSet bitSet = new BitSet();
@@ -38,7 +37,7 @@ public class FileWrite {
                     char[] codeBits = code.toCharArray();
 
                     for (char codeBit : codeBits) {
-                        if ((int) codeBit - 48 == 1) {
+                        if (codeBit == '1') {
                             bitSet.set(bitIndex);
                         }
                         bitIndex++;
@@ -57,9 +56,19 @@ public class FileWrite {
         StringBuilder header = new StringBuilder("");
         postOrderTraversal(node, header);
 
-        try ( BufferedWriter bw = new BufferedWriter(new FileWriter("src/main/resources/header_information.txt"));) {
-            bw.write(header.toString());
-            bw.close();
+        BitSet bitSet = new BitSet(header.length());
+        int bitIndex = 0;
+
+        for (char c : header.toString().toCharArray()) {
+            if (c == '1') {
+                bitSet.set(bitIndex);
+            }
+            bitIndex++;
+        }
+
+        try {
+            Path path = Paths.get(HEADER_INFORMATION_FILEPATH);
+            Files.write(path, bitSet.toByteArray());
         } catch (IOException e) {
             LOG.log(SEVERE, "[Error] An error occurred during writing header information.", e);
         }
@@ -74,9 +83,14 @@ public class FileWrite {
         postOrderTraversal(node.getRightChild(), header);
 
         if (node.isLeaf()) {
-            header.append("1").append(node.getCharacter());
+            header.append('1');
+            String characterBinary = Integer.toBinaryString(node.getCharacter());
+            for (int i = 0; i < 8 - characterBinary.length(); i++) {
+                header.append('0');
+            }
+            header.append(characterBinary);
         } else {
-            header.append("0");
+            header.append('0');
         }
     }
 }
