@@ -2,12 +2,13 @@ package pl.edu.pw.ee;
 
 public class Node implements Comparable<Node> {
 
-    private char character = '\0';
+    private final char character;
     private final int frequency;
     private final Node leftChild;
     private final Node rightChild;
 
     public Node(Node leftChild, Node rightChild) {
+        this.character = '\0';
         this.frequency = leftChild.frequency + rightChild.frequency;
         this.leftChild = leftChild;
         this.rightChild = rightChild;
@@ -20,13 +21,12 @@ public class Node implements Comparable<Node> {
         this.rightChild = null;
     }
 
-    @Override
-    public int compareTo(Node node) {
-        return this.frequency - node.frequency;
+    public char getCharacter() {
+        return this.character;
     }
 
-    public boolean isLeaf() {
-        return this.leftChild == null && this.rightChild == null;
+    public int getFrequency() {
+        return this.frequency;
     }
 
     public Node getLeftChild() {
@@ -37,7 +37,19 @@ public class Node implements Comparable<Node> {
         return this.rightChild;
     }
 
-    public char getCharacter() {
-        return this.character;
+    public boolean isLeaf() {
+        return this.leftChild == null && this.rightChild == null;
     }
+
+    @Override
+    public int compareTo(Node node) {
+        int frequencyComparison = this.frequency - node.frequency;
+
+        if (frequencyComparison != 0) {
+            return frequencyComparison;
+        } else {
+            return Integer.compare(this.character, node.character);
+        }
+    }
+
 }
