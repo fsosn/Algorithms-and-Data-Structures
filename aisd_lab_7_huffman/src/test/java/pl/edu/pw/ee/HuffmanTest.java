@@ -263,6 +263,23 @@ public class HuffmanTest {
         //then
         assertEquals(expectedNumOfChars, actualNumOfChars);
     }
+    
+    @Test
+    public void shouldReturnCorrectNumOfBitsWhenCompressAndCorrectNumOfCharsWhenDecompress() {
+        //given
+        huffman = new Huffman();
+        long expectedNumberOfBits = fileSizeInBits();
+        int expectedNumOfChars = countAllCharsInInputFile();
+
+        //when
+        int actualNumberOfBits = huffman.huffman(PATH_TO_ROOT_DIR, true);
+        int actualNumOfChars = huffman.huffman(PATH_TO_ROOT_DIR, false);
+
+        //then
+        assertEquals((int) expectedNumberOfBits, actualNumberOfBits);
+        assertEquals(expectedNumOfChars, actualNumOfChars);
+    }
+    
 
     private int countAllCharsInInputFile() {
         String filePath = PATH_TO_ROOT_DIR + FileOperation.INPUT_FILE;
