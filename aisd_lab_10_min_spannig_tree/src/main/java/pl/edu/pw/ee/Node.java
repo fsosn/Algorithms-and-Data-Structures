@@ -2,19 +2,19 @@ package pl.edu.pw.ee;
 
 public class Node {
 
-    private final char nodeLabel;
-    private final int edgeValue;
+    private final String label;
+    private final int weight;
 
-    public Node(char nodeLabel, int edgeValue) {
-        this.nodeLabel = nodeLabel;
-        this.edgeValue = edgeValue;
+    public Node(String label, int weight) {
+        this.label = label;
+        this.weight = weight;
     }
 
-    public char getNodeLabel() {
-        return this.nodeLabel;
+    public String getLabel() {
+        return this.label;
     }
 
-    public int getEdgeValue() {
-        return this.edgeValue;
+    public int getWeight() {
+        return this.weight;
     }
 }

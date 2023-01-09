@@ -2,14 +2,14 @@ package pl.edu.pw.ee;
 
 public class Edge implements Comparable<Edge> {
 
-    private final char firstNodeLabel;
-    private final char secondNodeLabel;
-    private final int edgeValue;
+    private final String sourceLabel;
+    private final String destinationLabel;
+    private final int weight;
 
-    public Edge(char firstNodeLabel, char secondNodeLabel, int edgeValue) {
-        this.firstNodeLabel = firstNodeLabel;
-        this.secondNodeLabel = secondNodeLabel;
-        this.edgeValue = edgeValue;
+    public Edge(String sourceLabel, String destinationLabel, int weight) {
+        this.sourceLabel = sourceLabel;
+        this.destinationLabel = destinationLabel;
+        this.weight = weight;
     }
 
     @Override
@@ -17,6 +17,18 @@ public class Edge implements Comparable<Edge> {
         if (that == null) {
             throw new IllegalArgumentException("Edge object cannot be null.");
         }
-        return this.edgeValue - that.edgeValue;
+        return this.weight - that.weight;
+    }
+
+    public String getSourceLabel() {
+        return this.sourceLabel;
+    }
+
+    public String getDestinationLabel() {
+        return this.destinationLabel;
+    }
+
+    public int getWeight() {
+        return this.weight;
     }
 }
