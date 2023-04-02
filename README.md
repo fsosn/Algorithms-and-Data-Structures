@@ -9,3 +9,5 @@ This repository contains all the work that I've done during Algorithms and Data 
 5. Huffman coding
 6. Longest common subsequence
 7. Minimum spanning tree (Prim, Kruskal)
+### Programming tools used:
+Java, JUnit, Git
